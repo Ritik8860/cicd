@@ -1,6 +1,10 @@
 pipeline {
     agent any
 
+    tools {
+        maven 'Maven3'
+    }
+
     environment {
         MAVEN_OPTS = "-Dmaven.test.failure.ignore=true"
         DOCKER_IMAGE = "your-ecr-repo-name" // We'll update this in Step 10
