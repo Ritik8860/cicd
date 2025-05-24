@@ -20,13 +20,18 @@ pipeline {
 
         stage('Build with Maven') {
             steps {
-                sh 'mvn clean install -DskipTests'
+                dir('demo') {
+                   sh 'mvn clean install -DskipTests'
+        }
             }
         }
 
         stage('Unit Tests') {
             steps {
+                dir('demo') {
                 sh 'mvn test'
+        }
+
             }
             post {
                 always {
