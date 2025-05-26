@@ -50,7 +50,6 @@ pipeline {
         stage('SonarQube Analysis') {
             steps {
                 echo 'Running SonarQube Analysis...'
-<<<<<<< HEAD
                 withCredentials([string(credentialsId: 'sonar-token-id', variable: 'SONAR_AUTH_TOKEN')]) {
                     withSonarQubeEnv('SonarQube') {
                         dir('demo') {
@@ -60,21 +59,6 @@ pipeline {
                                     -Dsonar.projectKey=demo-project \
                                     -Dsonar.host.url=http://sonarqube:9000
                             """
-=======
-                // Use withCredentials to securely handle the SonarQube token.
-                // The 'credentials' function fetches the credential by its ID.
-                // The 'SONAR_AUTH_TOKEN' variable will be available only within this block.
-                withCredentials([string(credentialsId: 'sonar-token-id', variable: 'SONAR_AUTH_TOKEN')]) {
-                    // Enters the SonarQube environment configured in Jenkins.
-                    // Ensure 'SonarQube' is configured under Manage Jenkins -> Configure System -> SonarQube servers.
-                    withSonarQubeEnv('SonarQube') {
-                        // Changes directory to 'demo' where the Maven project is located
-                        dir('demo') {
-                            // Executes the SonarQube analysis using Maven.
-                            // -Dsonar.login: Uses the securely loaded SONAR_AUTH_TOKEN.
-                            // -Dsonar.projectKey: Specifies the key for your project in SonarQube.
-                            sh "mvn sonar:sonar -Dsonar.login=${SONAR_AUTH_TOKEN} -Dsonar.projectKey=demo-project"
->>>>>>> fbb8eba (docker file created)
                         }
                     }
                 }
@@ -101,21 +85,11 @@ pipeline {
 
         stage('Docker Build') {
             when {
-<<<<<<< HEAD
                 expression { return false } // TODO: Change to 'true' when ready
             }
             steps {
                 echo 'Building Docker image...'
                 // Example:
-=======
-                // This stage is currently disabled and will be skipped.
-                // Change 'return false' to 'return true' to enable it.
-                expression { return false } // enable later
-            }
-            steps {
-                echo 'Building Docker image...'
-                // Add Docker build commands here, e.g.:
->>>>>>> fbb8eba (docker file created)
                 // script {
                 //     docker.build("${DOCKER_IMAGE}:${VERSION}", "./demo")
                 // }
@@ -124,42 +98,22 @@ pipeline {
 
         stage('Trivy Scan') {
             when {
-<<<<<<< HEAD
                 expression { return false } // TODO: Change to 'true' when ready
             }
             steps {
                 echo 'Scanning Docker image...'
                 // Example:
-=======
-                // This stage is currently disabled and will be skipped.
-                // Change 'return false' to 'return true' to enable it.
-                expression { return false } // enable later
-            }
-            steps {
-                echo 'Scanning Docker image...'
-                // Add Trivy scan commands here, e.g.:
->>>>>>> fbb8eba (docker file created)
                 // sh "trivy image ${DOCKER_IMAGE}:${VERSION}"
             }
         }
 
         stage('Push to ECR') {
             when {
-<<<<<<< HEAD
                 expression { return false } // TODO: Change to 'true' when ready
             }
             steps {
                 echo 'Pushing image to AWS ECR...'
                 // Example:
-=======
-                // This stage is currently disabled and will be skipped.
-                // Change 'return false' to 'return true' to enable it.
-                expression { return false } // enable later
-            }
-            steps {
-                echo 'Pushing image to AWS ECR...'
-                // Add ECR push commands here, e.g.:
->>>>>>> fbb8eba (docker file created)
                 // script {
                 //     docker.withRegistry("https://${AWS_ACCOUNT_ID}.dkr.ecr.${AWS_REGION}.amazonaws.com", 'ecr:aws-credentials-id') {
                 //         docker.image("${DOCKER_IMAGE}:${VERSION}").push()
@@ -170,21 +124,11 @@ pipeline {
 
         stage('Deploy to EKS') {
             when {
-<<<<<<< HEAD
                 expression { return false } // TODO: Change to 'true' when ready
             }
             steps {
                 echo 'Deploying to EKS using Helm...'
                 // Example:
-=======
-                // This stage is currently disabled and will be skipped.
-                // Change 'return false' to 'return true' to enable it.
-                expression { return false } // enable later
-            }
-            steps {
-                echo 'Deploying to EKS using Helm...'
-                // Add EKS deployment commands here, e.g.:
->>>>>>> fbb8eba (docker file created)
                 // sh "helm upgrade --install my-app ./helm-chart --set image.tag=${VERSION}"
             }
         }
