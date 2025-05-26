@@ -57,13 +57,17 @@ pipeline {
             }
         }
 
+        stage('Debug') {
+            steps {
+                sh 'pwd && ls -l'
+            }
+        }
+
         stage('Docker Build') {
             steps {
                 echo 'Building Docker image...'
-                dir('demo') {
-                    script {
-                        docker.build("${DOCKER_IMAGE}:${VERSION}")
-                    }
+                script {
+                    docker.build("${DOCKER_IMAGE}:${VERSION}")
                 }
             }
         }
@@ -71,7 +75,6 @@ pipeline {
         stage('Trivy Scan') {
             steps {
                 echo 'Scanning Docker image...'
-                // If Trivy fails due to vulnerabilities, don't fail the build yet
                 sh "trivy image ${DOCKER_IMAGE}:${VERSION} || true"
             }
         }
