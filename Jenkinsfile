@@ -9,6 +9,8 @@ pipeline {
         MAVEN_OPTS = "-Dmaven.test.failure.ignore=true"
         DOCKER_IMAGE = "032008616903.dkr.ecr.eu-north-1.amazonaws.com/jenkins"
         VERSION = "1.0.${BUILD_NUMBER}"
+        AWS_REGION = "eu-north-1"
+        ECR_REGISTRY = "032008616903.dkr.ecr.${AWS_REGION}.amazonaws.com"
     }
 
     stages {
@@ -79,18 +81,29 @@ pipeline {
             }
         }
 
-        stage('Push to ECR') {
-            when {
-                expression { return false } // Will enable later
+        stage('AWS ECR Login') {
+            steps {
+                withCredentials([usernamePassword(credentialsId: 'aws-ecr-creds', usernameVariable: 'AWS_ACCESS_KEY_ID', passwordVariable: 'AWS_SECRET_ACCESS_KEY')]) {
+                    sh '''
+                      aws configure set aws_access_key_id $AWS_ACCESS_KEY_ID
+                      aws configure set aws_secret_access_key $AWS_SECRET_ACCESS_KEY
+                      aws configure set default.region ${AWS_REGION}
+                      aws ecr get-login-password --region ${AWS_REGION} | docker login --username AWS --password-stdin ${ECR_REGISTRY}
+                    '''
+                }
             }
+        }
+
+        stage('Push to ECR') {
             steps {
                 echo 'Pushing image to AWS ECR...'
+                sh "docker push ${DOCKER_IMAGE}:${VERSION}"
             }
         }
 
         stage('Deploy to EKS') {
             when {
-                expression { return false } // Will enable later
+                expression { return false } // Enable later
             }
             steps {
                 echo 'Deploying to EKS using Helm...'
